@@ -1,8 +1,34 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel.Core", "src\SharedKernel\SharedKernel.Core\SharedKernel.Core.csproj", "{1F4EF299-C911-44B2-83A4-E688D3EC8996}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedKernel", "SharedKernel", "{1BFEC040-0974-41DF-B363-295A926E0357}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "src", "src", "{B08F0A17-F098-4D00-A2AD-49E77148C966}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "SharedKernel.Core", "SharedKernel.Core", "{7F68A04C-29E1-4B3C-B41B-8E6F2DBE12AA}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "SharedKernel.Presentation", "src\SharedKernel\SharedKernel.Presentation\SharedKernel.Presentation.csproj", "{87C5EE96-6189-4C17-906E-B9BA3DCF44F4}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
 		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{1F4EF299-C911-44B2-83A4-E688D3EC8996}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{1F4EF299-C911-44B2-83A4-E688D3EC8996}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{1F4EF299-C911-44B2-83A4-E688D3EC8996}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{1F4EF299-C911-44B2-83A4-E688D3EC8996}.Release|Any CPU.Build.0 = Release|Any CPU
+		{87C5EE96-6189-4C17-906E-B9BA3DCF44F4}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{87C5EE96-6189-4C17-906E-B9BA3DCF44F4}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{87C5EE96-6189-4C17-906E-B9BA3DCF44F4}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{87C5EE96-6189-4C17-906E-B9BA3DCF44F4}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(NestedProjects) = preSolution
+		{1BFEC040-0974-41DF-B363-295A926E0357} = {B08F0A17-F098-4D00-A2AD-49E77148C966}
+		{7F68A04C-29E1-4B3C-B41B-8E6F2DBE12AA} = {1BFEC040-0974-41DF-B363-295A926E0357}
+		{1F4EF299-C911-44B2-83A4-E688D3EC8996} = {7F68A04C-29E1-4B3C-B41B-8E6F2DBE12AA}
+		{87C5EE96-6189-4C17-906E-B9BA3DCF44F4} = {7F68A04C-29E1-4B3C-B41B-8E6F2DBE12AA}
 	EndGlobalSection
 EndGlobal

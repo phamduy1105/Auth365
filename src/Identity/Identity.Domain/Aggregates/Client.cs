@@ -16,7 +16,7 @@ public sealed class Client : AggregateRoot
         RequirePkce = requirePkce;
         RequireConsent = requireConsent;
     }
-    
+
     public string ClientId { get; private set; }
     public string ClientUri { get; private set; }
     
@@ -31,7 +31,7 @@ public sealed class Client : AggregateRoot
     private readonly List<string> _postLogoutRedirectUris = [];
     public IReadOnlyCollection<string> PostLogoutRedirectUris => _postLogoutRedirectUris.AsReadOnly();
     
-    private readonly List<string> _allowedScopes = [];
+    private readonly List<string> _allowedScopes = ["openid email profile offline_access"] ;
     public IReadOnlyCollection<string> AllowedScopes => _allowedScopes.AsReadOnly();
 
     public static Client Create(Guid tenantId,

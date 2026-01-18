@@ -6,7 +6,8 @@ public abstract class AggregateRoot :
     Entity,
     IAggregateRoot,
     ISoftDelete,
-    IAuditable
+    IAuditable,
+    IMultiTenant
 {
     private readonly List<IDomainEvent> _domainEvents = [];
     public IReadOnlyCollection<IDomainEvent> DomainEvents => _domainEvents.AsReadOnly();
@@ -38,4 +39,6 @@ public abstract class AggregateRoot :
     public Guid? CreatedBy { get; set; }
     public DateTimeOffset? LastModifiedAt { get; set; }
     public Guid? LastModifiedBy { get; set; }
+    
+    public Guid TenantId { get; protected init; }
 }

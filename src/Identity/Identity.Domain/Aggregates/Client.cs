@@ -47,6 +47,7 @@ public sealed class Client : AggregateRoot
         var client = new Client(tenantId,
             clientId,
             clientUri);
+        
         client.AddClientSecret(clientSecret);
         client.AddRedirectUri(redirectUri);
         client.AddPostLogoutRedirectUri(postLogoutRedirectUri);

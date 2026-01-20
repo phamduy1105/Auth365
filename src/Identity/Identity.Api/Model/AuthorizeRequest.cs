@@ -16,4 +16,6 @@ public sealed class AuthorizeRequest
     public string CodeChallenge { get; set; } = string.Empty;
     [FromQuery(Name = "code_challenge_method")]
     public string CodeChallengeMethod { get; set; } = string.Empty;
+    [FromQuery(Name = "nonce")]
+    public string Nonce { get; set; } = string.Empty;
 }

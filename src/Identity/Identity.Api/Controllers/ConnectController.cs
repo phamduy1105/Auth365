@@ -1,16 +1,27 @@
 using Identity.Api.Model;
+using Identity.Application.Commands.GetAuthorizeCode;
 using Microsoft.AspNetCore.Mvc;
+using MediatR;
 
 namespace Identity.Api.Controllers;
 
 [ApiController]
 [Route("[controller]/v2.0")]
-public class ConnectController : ControllerBase
+public class ConnectController(IMediator mediator) : ControllerBase
 {
     [HttpGet("authorize")]
     public async Task<IActionResult> Authorize([FromQuery] AuthorizeRequest request)
     {
-        await Task.CompletedTask;
-        return Ok(request);
+        var requestDto = new AuthorizeCodeRequestDto(request.ClientId,
+            request.RedirectUri,
+            request.Scope,
+            request.State,
+            request.CodeChallenge,
+            request.CodeChallengeMethod,
+            request.Nonce); 
+        var result = await mediator.Send(new GetAuthorizeCodeCommand(requestDto));
+        if (result.IsSuccess)
+            return Redirect(result.Value);
+        return BadRequest(result.Message);
     }
 }

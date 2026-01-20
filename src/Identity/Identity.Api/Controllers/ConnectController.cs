@@ -11,6 +11,6 @@ public class ConnectController : ControllerBase
     public async Task<IActionResult> Authorize([FromQuery] AuthorizeRequest request)
     {
         await Task.CompletedTask;
-        return Ok();
+        return Ok(request);
     }
 }

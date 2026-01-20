@@ -10,7 +10,8 @@ public sealed class AuthorizationCode : AggregateRoot
         string redirectUri,
         List<string> grantedScopes,
         string codeChallenge,
-        string codeChallengeMethod = "S256")
+        string codeChallengeMethod,
+        string nonce)
     {
         Code = code;
         ClientId = clientId;
@@ -19,12 +20,14 @@ public sealed class AuthorizationCode : AggregateRoot
         GrantedScopes = grantedScopes;
         CodeChallenge = codeChallenge;
         CodeChallengeMethod = codeChallengeMethod;
+        Nonce = nonce;
     }
     
     public string Code { get; init; }
     public string ClientId { get; init; }
     public string SubjectId { get; init; }
     public string RedirectUri { get; init; }
+    public string Nonce { get; init; }
     
     public string CodeChallenge { get; init; }
     public string CodeChallengeMethod { get; init; }
@@ -35,14 +38,18 @@ public sealed class AuthorizationCode : AggregateRoot
         string subjectId,
         string redirectUri,
         List<string> finalScopes,
-        string codeChallenge)
+        string codeChallenge,
+        string codeChallengeMethod = "S256",
+        string nonce = "default")
     {
         var authorizationCode = new AuthorizationCode(Guid.NewGuid().ToString("N"),
             clientId,
             subjectId,
             redirectUri,
             finalScopes,
-            codeChallenge);
+            codeChallenge,
+            codeChallengeMethod,
+            nonce);
         
         return authorizationCode;
     }

@@ -29,6 +29,25 @@ public class GetAuthorizeCodeCommandHandler(IClientRepository clientRepository,
 
         client.ValidateRedirectUri(request.AuthorizeCodeRequestDto.RedirectUri);
 
+        if (client.RequirePkce && string.IsNullOrWhiteSpace(request.AuthorizeCodeRequestDto.CodeChallenge))
+            return Result<string>.Failure("Code Challenge miss match",
+                "Code challenge is required for this client");
+        
+        var codeChallengeMethod = request.AuthorizeCodeRequestDto.CodeChallengeMethod;
+        
+        if (!string.IsNullOrWhiteSpace(request.AuthorizeCodeRequestDto.CodeChallenge))
+        {
+            if (string.IsNullOrWhiteSpace(codeChallengeMethod))
+            {
+                codeChallengeMethod = "plain"; 
+            }
+            
+            var supportedMethods = new[] { "S256", "plain" };
+            if (!supportedMethods.Contains(codeChallengeMethod))
+                return Result<string>.Failure("Code Challenge method not supported",
+                    "Transform algorithm not supported. Server only supports S256 and plain");
+        }
+
         //var user = await userRepository.GetUserInfoAsync(currentUser.UserId);
         var user = await userRepository.GetUserInfoAsync("user1@gmail.com");
 

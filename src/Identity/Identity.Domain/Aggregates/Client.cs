@@ -86,4 +86,28 @@ public sealed class Client : AggregateRoot
         
         _clientSecrets.Add(newSecretHash);
     }
+    
+    public void AddAllowedScope(string scope)
+    {
+        if (string.IsNullOrWhiteSpace(scope))
+            throw new ArgumentException("Scope cannot be empty");
+        
+        if (!_allowedScopes.Contains(scope))
+            _allowedScopes.Add(scope);
+    }
+
+    public void ValidateRedirectUri(string requestedUri)
+    {
+        if (string.IsNullOrWhiteSpace(requestedUri))
+        {
+            throw new ArgumentException("Redirect URI is required.");
+        }
+
+        var isValid = _redirectUris.Contains(requestedUri, StringComparer.Ordinal);
+
+        if (!isValid)
+        {
+            throw new ArgumentException($"Redirect URI '{requestedUri}' is not allowed for this client.");
+        }
+    }
 }

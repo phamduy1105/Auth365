@@ -7,21 +7,36 @@ using SharedKernel.Application.Models;
 namespace Identity.Application.Commands.GetAuthorizeCode;
 
 public class GetAuthorizeCodeCommandHandler(IClientRepository clientRepository,
+    IUserRepository userRepository,
     ICurrentUser currentUser) : 
     ICommandHandler<GetAuthorizeCodeCommand, string>
 {
     public async Task<Result<string>> Handle(GetAuthorizeCodeCommand request,
         CancellationToken cancellationToken)
     {
+        //if (!currentUser.IsAuthenticated)
+        //{
+        //    return Result<string>.Failure("User not authenticated", "Please log in first");
+        //}
+
         var requestScope = request.AuthorizeCodeRequestDto.Scope.Split(' ').ToList();
         var finalGrantedScopes = new List<string>();
-        
+
         var client =  await clientRepository.GetClientAsync(request.AuthorizeCodeRequestDto.ClientId);
         if (client == null)
             return Result<string>.Failure("Client not found",
                 $"Please check info again, ClientId: {request.AuthorizeCodeRequestDto.ClientId}");
-        
-        var roles = currentUser.Roles;
+
+        client.ValidateRedirectUri(request.AuthorizeCodeRequestDto.RedirectUri);
+
+        //var user = await userRepository.GetUserInfoAsync(currentUser.UserId);
+        var user = await userRepository.GetUserInfoAsync("user1@gmail.com");
+
+        if (user == null)
+            return Result<string>.Failure("User not found",
+                $"Please check info again, UserId: {currentUser.UserId}");
+
+        var roles = user.Roles;
 
         foreach (var scope in requestScope.Where(scope => client.AllowedScopes.Contains(scope)))
         {
@@ -30,6 +45,12 @@ public class GetAuthorizeCodeCommandHandler(IClientRepository clientRepository,
                 finalGrantedScopes.Add(scope);
             }
         }
+        if (finalGrantedScopes.Count == 0)
+        {
+            return Result<string>.Failure("No scopes granted",
+                "Please check info again, no scopes can be granted");
+        }
+
         var authCode = AuthorizationCode.Create(request.AuthorizeCodeRequestDto.ClientId,
             currentUser.UserId,
             request.AuthorizeCodeRequestDto.RedirectUri,
@@ -38,12 +59,12 @@ public class GetAuthorizeCodeCommandHandler(IClientRepository clientRepository,
             request.AuthorizeCodeRequestDto.CodeChallengeMethod,
             request.AuthorizeCodeRequestDto.Nonce
         );
-        
+
         var redirectUrl = $"{request.AuthorizeCodeRequestDto.RedirectUri}" +
-                          $"?code={authCode.Code}" +
+                          $"?code={authCode.Id}" +
                           $"&state={request.AuthorizeCodeRequestDto.State}" +
                           $"&scope={Uri.EscapeDataString(string.Join(" ", finalGrantedScopes))}";
-        
+
         return Result<string>.Success(redirectUrl);
     }
     

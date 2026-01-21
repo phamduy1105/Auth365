@@ -4,8 +4,7 @@ namespace Identity.Domain.Aggregates;
 
 public sealed class AuthorizationCode : AggregateRoot
 {
-    private AuthorizationCode(string code,
-        string clientId,
+    private AuthorizationCode(string clientId,
         string subjectId,
         string redirectUri,
         List<string> grantedScopes,
@@ -13,7 +12,6 @@ public sealed class AuthorizationCode : AggregateRoot
         string codeChallengeMethod,
         string nonce)
     {
-        Code = code;
         ClientId = clientId;
         SubjectId = subjectId;
         RedirectUri = redirectUri;
@@ -23,7 +21,6 @@ public sealed class AuthorizationCode : AggregateRoot
         Nonce = nonce;
     }
     
-    public string Code { get; init; }
     public string ClientId { get; init; }
     public string SubjectId { get; init; }
     public string RedirectUri { get; init; }
@@ -42,8 +39,7 @@ public sealed class AuthorizationCode : AggregateRoot
         string codeChallengeMethod = "S256",
         string nonce = "default")
     {
-        var authorizationCode = new AuthorizationCode(Guid.NewGuid().ToString("N"),
-            clientId,
+        var authorizationCode = new AuthorizationCode(clientId,
             subjectId,
             redirectUri,
             finalScopes,

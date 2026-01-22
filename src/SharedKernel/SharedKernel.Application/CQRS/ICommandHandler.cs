@@ -1,8 +1,8 @@
 using MediatR;
-using SharedKernel.Application.Models;
+using SharedKernel.Application.Models.Result;
 
 namespace SharedKernel.Application.CQRS;
 
 public interface ICommandHandler<in TCommand, TResponse> :
-    IRequestHandler<TCommand, Result<TResponse>>
+    IRequestHandler<TCommand, ApplicationResult>
     where TCommand : ICommand<TResponse>;

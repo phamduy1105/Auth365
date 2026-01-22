@@ -2,6 +2,7 @@ using Identity.Api.Model;
 using Identity.Application.Commands.GetAuthorizeCode;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
+using SharedKernel.Application.Models.Result;
 
 namespace Identity.Api.Controllers;
 
@@ -26,9 +27,27 @@ public class ConnectController(IMediator mediator) : ControllerBase
             request.CodeChallengeMethod,
             request.Nonce); 
         var result = await mediator.Send(new GetAuthorizeCodeCommand(requestDto));
-        if (result.IsSuccess)
-            //return Redirect(result.Value);
-            return Ok(result.Value);
-        return BadRequest(result.Message);
+        switch (result)
+        {
+            case ValueApplicationResult<string> value:
+                //return Redirect(value);
+                return Ok(value);
+            case ErrorApplicationResult error:
+            {
+                var problemDetails = new ProblemDetails()
+                {
+                    Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                    Title = "One or more validation errors occurred.",
+                    Status = StatusCodes.Status400BadRequest,
+                };
+                var traceId = HttpContext.TraceIdentifier;
+                problemDetails.Extensions["errors"] = error.ErrorMessage;
+                problemDetails.Extensions["traceId"] = traceId;
+
+                return BadRequest(problemDetails);
+            }
+            default:
+                return BadRequest();
+        }
     }
 }

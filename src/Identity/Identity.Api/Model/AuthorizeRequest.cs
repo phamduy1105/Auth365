@@ -11,11 +11,11 @@ public sealed class AuthorizeRequest
     [FromQuery(Name = "scope")]
     public string Scope { get; set; } = string.Empty;
     [FromQuery(Name = "state")]
-    public string State { get; set; } = string.Empty;
+    public string? State { get; set; } = string.Empty;
     [FromQuery(Name = "code_challenge")]
     public string CodeChallenge { get; set; } = string.Empty;
     [FromQuery(Name = "code_challenge_method")]
-    public string CodeChallengeMethod { get; set; } = string.Empty;
+    public string? CodeChallengeMethod { get; set; } = string.Empty;
     [FromQuery(Name = "nonce")]
     public string Nonce { get; set; } = string.Empty;
 }

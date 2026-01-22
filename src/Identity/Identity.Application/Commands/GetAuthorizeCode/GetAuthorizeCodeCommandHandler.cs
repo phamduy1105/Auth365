@@ -2,7 +2,7 @@ using Identity.Application.Interfaces;
 using Identity.Domain.Abstractions;
 using Identity.Domain.Aggregates;
 using SharedKernel.Application.CQRS;
-using SharedKernel.Application.Models;
+using SharedKernel.Application.Models.Result;
 
 namespace Identity.Application.Commands.GetAuthorizeCode;
 
@@ -11,12 +11,12 @@ public class GetAuthorizeCodeCommandHandler(IClientRepository clientRepository,
     ICurrentUser currentUser) : 
     ICommandHandler<GetAuthorizeCodeCommand, string>
 {
-    public async Task<Result<string>> Handle(GetAuthorizeCodeCommand request,
+    public async Task<ApplicationResult> Handle(GetAuthorizeCodeCommand request,
         CancellationToken cancellationToken)
     {
         //if (!currentUser.IsAuthenticated)
         //{
-        //    return Result<string>.Failure("User not authenticated", "Please log in first");
+        //    return ApplicationResult<string>.Failure("User not authenticated", "Please log in first");
         //}
 
         var requestScope = request.AuthorizeCodeRequestDto.Scope.Split(' ').ToList();
@@ -24,14 +24,12 @@ public class GetAuthorizeCodeCommandHandler(IClientRepository clientRepository,
 
         var client =  await clientRepository.GetClientAsync(request.AuthorizeCodeRequestDto.ClientId);
         if (client == null)
-            return Result<string>.Failure("Client not found",
-                $"Please check info again, ClientId: {request.AuthorizeCodeRequestDto.ClientId}");
+            return new ErrorApplicationResult($"Please check info again, ClientId: {request.AuthorizeCodeRequestDto.ClientId}");
 
         client.ValidateRedirectUri(request.AuthorizeCodeRequestDto.RedirectUri);
 
         if (client.RequirePkce && string.IsNullOrWhiteSpace(request.AuthorizeCodeRequestDto.CodeChallenge))
-            return Result<string>.Failure("Code Challenge miss match",
-                "Code challenge is required for this client");
+            return new ErrorApplicationResult("Code challenge is required for this client");
         
         var codeChallengeMethod = request.AuthorizeCodeRequestDto.CodeChallengeMethod;
         
@@ -44,16 +42,14 @@ public class GetAuthorizeCodeCommandHandler(IClientRepository clientRepository,
             
             var supportedMethods = new[] { "S256", "plain" };
             if (!supportedMethods.Contains(codeChallengeMethod))
-                return Result<string>.Failure("Code Challenge method not supported",
-                    "Transform algorithm not supported. Server only supports S256 and plain");
+                return new ErrorApplicationResult("Transform algorithm not supported. Server only supports S256 and plain");
         }
 
         //var user = await userRepository.GetUserInfoAsync(currentUser.UserId);
         var user = await userRepository.GetUserInfoAsync("user1@gmail.com");
 
         if (user == null)
-            return Result<string>.Failure("User not found",
-                $"Please check info again, UserId: {currentUser.UserId}");
+            return new ErrorApplicationResult($"Please check info again, UserId: {currentUser.UserId}");
 
         var roles = user.Roles;
 
@@ -66,8 +62,7 @@ public class GetAuthorizeCodeCommandHandler(IClientRepository clientRepository,
         }
         if (finalGrantedScopes.Count == 0)
         {
-            return Result<string>.Failure("No scopes granted",
-                "Please check info again, no scopes can be granted");
+            return new ErrorApplicationResult("Please check info again, no scopes can be granted");
         }
 
         var authCode = AuthorizationCode.Create(request.AuthorizeCodeRequestDto.ClientId,
@@ -84,7 +79,7 @@ public class GetAuthorizeCodeCommandHandler(IClientRepository clientRepository,
                           $"&state={request.AuthorizeCodeRequestDto.State}" +
                           $"&scope={Uri.EscapeDataString(string.Join(" ", finalGrantedScopes))}";
 
-        return Result<string>.Success(redirectUrl);
+        return new ValueApplicationResult<string>(redirectUrl);
     }
     
     private static bool IsIdentityScope(string scope)

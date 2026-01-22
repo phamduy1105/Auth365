@@ -1,6 +1,6 @@
 using MediatR;
-using SharedKernel.Application.Models;
+using SharedKernel.Application.Models.Result;
 
 namespace SharedKernel.Application.CQRS;
 
-public interface IQuery<TResponse> : IRequest<Result<TResponse>>;
+public interface IQuery<TResponse> : IRequest<ApplicationResult>;

@@ -1,4 +1,5 @@
 using Identity.Api.Contexts;
+using Identity.Api.Handler.Exception;
 using Identity.Application.Commands.GetAuthorizeCode;
 using Identity.Application.Interfaces;
 using Identity.Domain.Abstractions;
@@ -24,6 +25,8 @@ builder.Services.AddAuthentication(CookieAuthenticationDefaults.AuthenticationSc
         options.Cookie.SecurePolicy = CookieSecurePolicy.Always;
     });
 builder.Services.AddHttpContextAccessor();
+builder.Services.AddExceptionHandler<GlobalExceptionHandler>();
+builder.Services.AddProblemDetails();
 
 builder.Services.AddMediatR(ops =>
 {
@@ -35,6 +38,7 @@ builder.Services.AddScoped<IUserRepository, UserRepository>();
 builder.Services.AddScoped<ICurrentUser, CurrentUserContext>();
 
 var app = builder.Build();
+app.UseExceptionHandler();
 
 app.UseStaticFiles();
 

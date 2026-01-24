@@ -1,5 +1,6 @@
 using Identity.Api.Model;
 using Identity.Application.Commands.CreateAuthorizeCode;
+using Identity.Application.Commands.CreateToken;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using SharedKernel.Application.Models.Result;
@@ -31,7 +32,7 @@ public class ConnectController(IMediator mediator) : ControllerBase
         {
             case ValueApplicationResult<string> value:
                 //return Redirect(value);
-                return Ok(value);
+                return Ok(value.Value);
             case ErrorApplicationResult error:
             {
                 var problemDetails = new ProblemDetails()
@@ -54,6 +55,33 @@ public class ConnectController(IMediator mediator) : ControllerBase
     [HttpPost("token")]
     public async Task<IActionResult> Token([FromForm] TokenRequest request)
     {
-        return Ok();
+        var tokenRequestDto = new TokenRequestDto(request.GrantType,
+            request.Code,
+            request.RedirectUri,
+            request.ClientId,
+            request.ClientSecret,
+            request.CodeVerifier);
+        var result = await mediator.Send(new CreateTokenCommand(tokenRequestDto));
+        switch (result)
+        {
+            case ValueApplicationResult<TokenResult> value:
+                return Ok(value);
+            case ErrorApplicationResult error:
+            {
+                var problemDetails = new ProblemDetails()
+                {
+                    Type = "https://tools.ietf.org/html/rfc9110#section-15.5.1",
+                    Title = "One or more validation errors occurred.",
+                    Status = StatusCodes.Status400BadRequest,
+                };
+                var traceId = HttpContext.TraceIdentifier;
+                problemDetails.Extensions["errors"] = error.ErrorMessage;
+                problemDetails.Extensions["traceId"] = traceId;
+
+                return BadRequest(problemDetails);
+            }
+            default:
+                return BadRequest();
+        }
     }
 }

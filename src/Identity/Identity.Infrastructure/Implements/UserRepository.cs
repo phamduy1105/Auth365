@@ -16,6 +16,8 @@ public sealed class UserRepository : IUserRepository
         user1.AddRole("product.create");
         user1.AddRole("product.update");
         user1.AddRole("product.delete");
+        user1.AddRole("openid");
+        user1.AddRole("email");
     
         _users = [user1];
     }

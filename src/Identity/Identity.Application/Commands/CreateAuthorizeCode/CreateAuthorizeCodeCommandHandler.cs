@@ -8,7 +8,8 @@ namespace Identity.Application.Commands.CreateAuthorizeCode;
 
 public class CreateAuthorizeCodeCommandHandler(IClientRepository clientRepository,
     IUserRepository userRepository,
-    ICurrentUser currentUser) : 
+    ICurrentUser currentUser,
+    IAuthorizationCodeStore authorizationCodeStore) : 
     ICommandHandler<CreateAuthorizeCodeCommand, string>
 {
     public async Task<ApplicationResult> Handle(CreateAuthorizeCodeCommand request,
@@ -75,9 +76,11 @@ public class CreateAuthorizeCodeCommandHandler(IClientRepository clientRepositor
         );
 
         var redirectUrl = $"{request.AuthorizeCodeRequestDto.RedirectUri}" +
-                          $"?code={authCode.Id}" +
+                          $"?code={authCode.Id:N}" +
                           $"&state={request.AuthorizeCodeRequestDto.State}" +
                           $"&scope={Uri.EscapeDataString(string.Join(" ", finalGrantedScopes))}";
+
+        await authorizationCodeStore.StoreCodeAsync(authCode.Id.ToString("N"), authCode);
 
         return new ValueApplicationResult<string>(redirectUrl);
     }

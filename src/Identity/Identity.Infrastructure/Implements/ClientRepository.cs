@@ -19,6 +19,8 @@ public sealed class ClientRepository : IClientRepository
             "https://app.example.com/logout");
         client1.AddAllowedScope("product.view");
         client1.AddAllowedScope("product.delete");
+        client1.AddAllowedScope("openid");
+        client1.AddAllowedScope("email");
 
         var client2 = Client.Create(
             tenantId,

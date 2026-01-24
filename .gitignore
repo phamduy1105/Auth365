@@ -1,3 +1,6 @@
 .idea
 **/bin/
 **/obj/
+
+#update CreateTokenCommandHandler.cs using real jwt token
+#update Login.cshtml using email and password to write cookie

@@ -1,8 +1,8 @@
 using FluentValidation;
 
-namespace Identity.Application.Commands.GetAuthorizeCode;
+namespace Identity.Application.Commands.CreateAuthorizeCode;
 
-public class AuthorizeCodeValidator : AbstractValidator<GetAuthorizeCodeCommand>
+public class AuthorizeCodeValidator : AbstractValidator<CreateAuthorizeCodeCommand>
 {
     public AuthorizeCodeValidator() {
         RuleFor(x 

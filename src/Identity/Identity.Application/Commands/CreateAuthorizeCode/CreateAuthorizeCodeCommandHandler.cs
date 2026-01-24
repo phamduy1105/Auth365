@@ -4,14 +4,14 @@ using Identity.Domain.Aggregates;
 using SharedKernel.Application.CQRS;
 using SharedKernel.Application.Models.Result;
 
-namespace Identity.Application.Commands.GetAuthorizeCode;
+namespace Identity.Application.Commands.CreateAuthorizeCode;
 
-public class GetAuthorizeCodeCommandHandler(IClientRepository clientRepository,
+public class CreateAuthorizeCodeCommandHandler(IClientRepository clientRepository,
     IUserRepository userRepository,
     ICurrentUser currentUser) : 
-    ICommandHandler<GetAuthorizeCodeCommand, string>
+    ICommandHandler<CreateAuthorizeCodeCommand, string>
 {
-    public async Task<ApplicationResult> Handle(GetAuthorizeCodeCommand request,
+    public async Task<ApplicationResult> Handle(CreateAuthorizeCodeCommand request,
         CancellationToken cancellationToken)
     {
         //if (!currentUser.IsAuthenticated)

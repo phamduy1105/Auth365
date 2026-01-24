@@ -1,4 +1,4 @@
-namespace Identity.Application.Commands.GetAuthorizeCode;
+namespace Identity.Application.Commands.CreateAuthorizeCode;
 
 public sealed record AuthorizeCodeRequestDto(string ClientId,
         string RedirectUri,

@@ -1,5 +1,5 @@
 using Identity.Api.Model;
-using Identity.Application.Commands.GetAuthorizeCode;
+using Identity.Application.Commands.CreateAuthorizeCode;
 using Microsoft.AspNetCore.Mvc;
 using MediatR;
 using SharedKernel.Application.Models.Result;
@@ -26,7 +26,7 @@ public class ConnectController(IMediator mediator) : ControllerBase
             request.CodeChallenge,
             request.CodeChallengeMethod,
             request.Nonce); 
-        var result = await mediator.Send(new GetAuthorizeCodeCommand(requestDto));
+        var result = await mediator.Send(new CreateAuthorizeCodeCommand(requestDto));
         switch (result)
         {
             case ValueApplicationResult<string> value:
@@ -49,5 +49,11 @@ public class ConnectController(IMediator mediator) : ControllerBase
             default:
                 return BadRequest();
         }
+    }
+
+    [HttpPost("token")]
+    public async Task<IActionResult> Token([FromForm] TokenRequest request)
+    {
+        return Ok();
     }
 }

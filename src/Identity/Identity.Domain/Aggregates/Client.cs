@@ -67,7 +67,7 @@ public sealed class Client : AggregateRoot
             _redirectUris.Add(uri);
     }
 
-    public void AddPostLogoutRedirectUri(string uri)
+    private void AddPostLogoutRedirectUri(string uri)
     {
         if (!Uri.TryCreate(uri, UriKind.Absolute, out var outUri))
             throw new ArgumentException($"Invalid URI: {uri}");

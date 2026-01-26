@@ -1,3 +1,4 @@
+using SharedKernel.Core.Abstractions;
 using SharedKernel.Core.Base;
 
 namespace Identity.Domain.Aggregates;

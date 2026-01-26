@@ -27,18 +27,25 @@ public abstract class AggregateRoot :
         _domainEvents.Remove(domainEvent);
     }
     
-    public bool IsDeleted { get; private set; } = true;
-    public DateTimeOffset? DeletedAt { get; private set; } = DateTimeOffset.UtcNow;
+    public bool IsDeleted { get; private set; }
+    public DateTimeOffset? DeletedAt { get; private set; }
+
+    public void Delete()
+    {
+        IsDeleted = true;
+        DeletedAt = DateTimeOffset.UtcNow;
+    }
+    
     public void UndoDelete()
     {
         IsDeleted = false;
         DeletedAt = null;
     }
 
-    public DateTimeOffset CreatedAt { get; set; }
-    public Guid? CreatedBy { get; set; }
-    public DateTimeOffset? LastModifiedAt { get; set; }
-    public Guid? LastModifiedBy { get; set; }
+    public DateTimeOffset CreatedAt { get; private set; } = DateTimeOffset.UtcNow;
+    public Guid? CreatedBy { get; private set; }
+    public DateTimeOffset? LastModifiedAt { get; private set; }
+    public Guid? LastModifiedBy { get; private set; }
     
     public Guid TenantId { get; protected init; }
 }

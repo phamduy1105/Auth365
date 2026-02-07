@@ -37,6 +37,12 @@ public sealed class ClientRepository : IClientRepository
             client2
         ];
     }
+    public async Task<Client?> GetClientAsync(Guid clientId)
+    {
+        var client = _clients.FirstOrDefault(c => c.Id == clientId);
+        return await Task.FromResult(client);
+    }
+    
     public async Task<Client?> GetClientAsync(string clientId)
     {
         var client = _clients.FirstOrDefault(c => c.ClientId == clientId);
